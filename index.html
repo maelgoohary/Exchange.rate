@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مؤشر أسعار الصرف في مصر | Egypt FX Live Rates</title>
+  <meta name="description" content="منصة أسعار الصرف الحية للجنيه المصري مقابل العملات الأجنبية من البنك المركزي المصري، البنك الأهلي المصري، وبنك مصر.">
+  <meta name="author" content="Mahmoud El-Gohary">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="site-header">
+    <div class="container header-container">
+      <div class="logo-area">
+        <div class="logo-badge">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6v12M15 9.5H9.5a2.5 2.5 0 0 0 0 5h5a2.5 2.5 0 0 1 0 5H8"></path>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <h1 class="site-title" data-i18n="siteTitle">مؤشر الجنيه المصري</h1>
+          <p class="site-subtitle" data-i18n="siteSubtitle">أسعار الصرف الرسمية الموثقة لحظة بلحظة</p>
+        </div>
+      </div>
+
+      <!-- Quick Ticker or Status Bar in Header -->
+      <div class="header-status">
+        <div class="pulse-indicator">
+          <span class="pulse-dot"></span>
+          <span class="status-label" data-i18n="marketLive">سوق الصرف: تحديث نشط</span>
+        </div>
+        <span class="status-sep">|</span>
+        <div class="time-display" id="headerTime">--:--:--</div>
+      </div>
+
+      <!-- Controls: Theme, Language, Quick Refresh -->
+      <div class="header-controls">
+        <button id="refreshBtn" class="btn-icon" title="تحديث البيانات" aria-label="Refresh rates">
+          <svg class="icon spin-on-click" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+            <path d="M21 3v5h-5"></path>
+            <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+            <path d="M3 21v-5h5"></path>
+          </svg>
+          <span class="control-label" data-i18n="refresh">تحديث</span>
+        </button>
+
+        <button id="themeToggle" class="btn-icon" title="تبديل المظهر" aria-label="Toggle theme">
+          <svg class="icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <svg class="icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+
+        <button id="langToggle" class="btn-lang" title="Switch Language" aria-label="Switch Language">
+          <span class="lang-flag" id="langFlag">🇬🇧</span>
+          <span class="lang-text" id="langText">English</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Running Marquee Ticker -->
+    <div class="ticker-wrapper" id="tickerWrapper">
+      <div class="ticker-track" id="tickerTrack">
+        <!-- Dynamically injected currency badges -->
+      </div>
+    </div>
+
+    <!-- Economic & Global News Ticker Bar (Below currency exchange ticker) -->
+    <div class="news-ticker-bar" id="newsTickerBar">
+      <div class="news-tag-badge">
+        <span class="news-flash-icon">⚡</span>
+        <span class="news-badge-label" data-i18n="newsTagLabel">أخبار المال والاقتصاد</span>
+      </div>
+      <div class="news-marquee-wrapper">
+        <div class="news-marquee-track" id="newsMarqueeTrack">
+          <!-- Injected dynamically in Arabic or English with verified sources -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="main-content container">
+    
+    <!-- Hero USD Live Showcase Window (Replaces the old banner with a youthful, big prominent card) -->
+    <section class="hero-usd-section" id="heroUsdSection">
+      <div class="hero-usd-card">
+        <div class="hero-card-glow"></div>
+
+        <div class="hero-top-bar">
+          <div class="hero-badge">
+            <span class="currency-flag-pair">🇺🇸 🇪🇬</span>
+            <span class="hero-badge-title" data-i18n="heroUsdTitle">سعر الدولار الأمريكي مقابل الجنيه المصري الآن</span>
+          </div>
+          <div class="hero-live-pill">
+            <span class="live-dot"></span>
+            <span data-i18n="heroLiveUpdated">محدث لحظياً في البنوك</span>
+          </div>
+        </div>
+
+        <div class="hero-main-row">
+          <div class="hero-price-wrap">
+            <div class="hero-calc-unit">1 USD =</div>
+            <div class="hero-rate-display">
+              <span class="hero-big-number" id="heroUsdRate">56.17</span>
+              <span class="hero-egp-label" data-i18n="egpUnit">جنيه مصري</span>
+            </div>
+            <div class="hero-rate-trend" id="heroUsdTrend">
+              <span class="trend-pill up">▲ +0.08% اليوم</span>
+              <span class="trend-source" data-i18n="cbeClearingLabel">متوسط البنك المركزي الرسمي</span>
+            </div>
+          </div>
+
+          <!-- Hero Refresh Button Beside the Rate -->
+          <div class="hero-action-wrap">
+            <button id="heroRefreshBtn" class="btn-hero-refresh" title="تحديث السعر الفوري الآن" aria-label="Refresh live rate">
+              <svg class="hero-refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                <path d="M21 3v5h-5"></path>
+                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                <path d="M3 21v-5h5"></path>
+              </svg>
+              <div class="hero-refresh-text">
+                <strong data-i18n="refreshNow">تحديث السعر</strong>
+                <span class="refresh-sub" id="heroLastSync">منذ لحظات</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sub-row: Highest and Lowest Rate and in which bank -->
+        <div class="hero-extremes-row">
+          <div class="extreme-card highest">
+            <div class="extreme-icon-box">📈</div>
+            <div class="extreme-info">
+              <span class="extreme-title" data-i18n="highestRateTitle">أعلى سعر صرف (بيع):</span>
+              <div class="extreme-value-box">
+                <strong class="extreme-rate" id="heroHighestRate">56.32 ج.م</strong>
+                <span class="extreme-bank-tag" id="heroHighestBank">البنك الأهلي المصري (NBE)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="extreme-card lowest">
+            <div class="extreme-icon-box">📉</div>
+            <div class="extreme-info">
+              <span class="extreme-title" data-i18n="lowestRateTitle">أدنى سعر صرف (شراء):</span>
+              <div class="extreme-value-box">
+                <strong class="extreme-rate" id="heroLowestRate">56.07 ج.م</strong>
+                <span class="extreme-bank-tag" id="heroLowestBank">بنك مصر (BM)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="extreme-card cbe-card">
+            <div class="extreme-icon-box">🏛️</div>
+            <div class="extreme-info">
+              <span class="extreme-title" data-i18n="cbeReferenceTitle">سعر البنك المركزي (CBE):</span>
+              <div class="extreme-value-box">
+                <strong class="extreme-rate" id="heroCbeRate">56.1675 ج.م</strong>
+                <span class="extreme-bank-tag" data-i18n="cbeOfficialTag">السعر الرسمي المعتمد</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Bank Selection Bar & Filter Tabs -->
+    <section class="bank-selector-section">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <h2 class="section-title" data-i18n="selectBankTitle">اختر البنك أو قارن بين البنوك</h2>
+          <p class="section-subtitle" data-i18n="selectBankSub">اختر المصدر المصرفي لعرض أسعاره أو انتقل لتبويب المقارنة الشاملة</p>
+        </div>
+      </div>
+
+      <div class="bank-tabs-wrapper">
+        <div class="bank-tabs" role="tablist">
+          <button class="bank-tab active" data-bank="cbe" role="tab">
+            <div class="bank-tab-icon cbe-icon">🏦</div>
+            <div class="bank-tab-info">
+              <span class="bank-name" data-i18n="bankCbe">البنك المركزي المصري</span>
+              <span class="bank-type" data-i18n="bankCbeType">السعر المرجعي / السوقي المعتمد</span>
+            </div>
+            <div class="bank-check">✓</div>
+          </button>
+
+          <button class="bank-tab" data-bank="nbe" role="tab">
+            <div class="bank-tab-icon nbe-icon">🏛️</div>
+            <div class="bank-tab-info">
+              <span class="bank-name" data-i18n="bankNbe">البنك الأهلي المصري</span>
+              <span class="bank-type" data-i18n="bankNbeType">أكبر بنك حكومي مصري</span>
+            </div>
+            <div class="bank-check">✓</div>
+          </button>
+
+          <button class="bank-tab" data-bank="bm" role="tab">
+            <div class="bank-tab-icon bm-icon">🏢</div>
+            <div class="bank-tab-info">
+              <span class="bank-name" data-i18n="bankBm">بنك مصر</span>
+              <span class="bank-type" data-i18n="bankBmType">أسعار الصرف اللحظية بفروع البنك</span>
+            </div>
+            <div class="bank-check">✓</div>
+          </button>
+
+          <button class="bank-tab compare-tab" data-bank="compare" role="tab">
+            <div class="bank-tab-icon compare-icon">⚖️</div>
+            <div class="bank-tab-info">
+              <span class="bank-name" data-i18n="compareBanks">مقارنة البنوك الذكية</span>
+              <span class="bank-type" data-i18n="compareBanksSub">أفضل سعر شراء وأفضل سعر بيع</span>
+            </div>
+            <div class="bank-check">✓</div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Currency Filters -->
+    <section class="filter-bar">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <input type="text" id="currencySearch" placeholder="ابحث باسم العملة أو الرمز (مثال: دولار، USD، ريال...)" data-i18n-placeholder="searchPlaceholder" />
+        <button id="clearSearch" class="clear-btn" style="display: none;">✕</button>
+      </div>
+
+      <div class="category-pills">
+        <button class="pill active" data-cat="all" data-i18n="catAll">جميع العملات (10)</button>
+        <button class="pill" data-cat="major" data-i18n="catMajor">العملات الدولية الرئيسية</button>
+        <button class="pill" data-cat="arab" data-i18n="catArab">العملات العربية والخليجية</button>
+      </div>
+    </section>
+
+    <!-- Rates Grid View (Normal Bank View) -->
+    <section id="ratesGridSection" class="rates-section">
+      <div class="cards-grid" id="ratesCardsGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- Compare Matrix Table View (Visible when compare tab is clicked) -->
+    <section id="compareSection" class="compare-section" style="display: none;">
+      <div class="table-card">
+        <div class="table-header-bar">
+          <div>
+            <h3 class="table-title" data-i18n="compareTableTitle">جدول المقارنة الفورية بين البنوك الثلاثة</h3>
+            <p class="table-subtitle" data-i18n="compareTableSub">يتم تمييز أفضل سعر شراء (للبيع للبنك) وأفضل سعر بيع (للشراء من البنك) تلقائياً باللون الأخضر</p>
+          </div>
+          <div class="table-legend">
+            <span class="legend-badge best-buy-badge"><span class="badge-dot"></span> <span data-i18n="legendBestBuy">أفضل بنك تبيع له</span></span>
+            <span class="legend-badge best-sell-badge"><span class="badge-dot"></span> <span data-i18n="legendBestSell">أفضل بنك تشتري منه</span></span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="fx-compare-table" id="compareTable">
+            <thead>
+              <tr>
+                <th data-i18n="colCurrency">العملة</th>
+                <th data-i18n="colCbe">البنك المركزي</th>
+                <th data-i18n="colNbe">البنك الأهلي المصري</th>
+                <th data-i18n="colBm">بنك مصر</th>
+                <th data-i18n="colBestDeal">أفضل خيار لك</th>
+              </tr>
+            </thead>
+            <tbody id="compareTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Exchange Rate Chart Section -->
+    <section class="chart-section" id="chartSection">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title-area">
+            <div class="chart-tag">
+              <span class="chart-tag-dot"></span>
+              <span id="selectedCurrencyLabel">الدولار الأمريكي (USD / EGP)</span>
+            </div>
+            <h3 class="chart-main-title" data-i18n="chartTitle">الرسم البياني التفاعلي لحركة سعر الصرف</h3>
+            <p class="chart-desc" data-i18n="chartSub">تحليل الأداء السعري مقابل الجنيه المصري مع إمكانية التحديد الزمني المخصص</p>
+          </div>
+
+          <!-- Timeframe Selector Controls -->
+          <div class="chart-controls">
+            <!-- Currency selector for the chart -->
+            <div class="select-wrapper">
+              <label for="chartCurrencySelect" class="sr-only" data-i18n="chartSelectCurrency">اختر العملة</label>
+              <select id="chartCurrencySelect" class="form-select">
+                <option value="USD">🇺🇸 USD - الدولار الأمريكي</option>
+                <option value="EUR">🇪🇺 EUR - اليورو الأوروبي</option>
+                <option value="SAR">🇸🇦 SAR - الريال السعودي</option>
+                <option value="AED">🇦🇪 AED - الدرهم الإماراتي</option>
+                <option value="GBP">🇬🇧 GBP - الجنيه الإسترليني</option>
+                <option value="KWD">🇰🇼 KWD - الدينار الكويتي</option>
+                <option value="QAR">🇶🇦 QAR - الريال القطري</option>
+                <option value="CHF">🇨🇭 CHF - الفرنك السويسري</option>
+                <option value="CAD">🇨🇦 CAD - الدولار الكندي</option>
+                <option value="JPY">🇯🇵 JPY - الين الياباني (100)</option>
+              </select>
+            </div>
+
+            <!-- Time Buttons -->
+            <div class="timeframe-buttons">
+              <button class="time-btn active" data-range="24h" data-i18n="range24h">٢٤ ساعة (لحظي)</button>
+              <button class="time-btn" data-range="7d" data-i18n="range7d">٧ أيام (أسبوعي)</button>
+              <button class="time-btn" data-range="custom" data-i18n="rangeCustom">فترة مخصصة 📅</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Date Range Picker Container (Collapsible) -->
+        <div class="custom-date-bar" id="customDateBar" style="display: none;">
+          <div class="date-inputs-group">
+            <div class="input-item">
+              <label for="startDate" data-i18n="startDate">من تاريخ:</label>
+              <input type="date" id="startDate" class="form-date" />
+            </div>
+            <div class="input-item">
+              <label for="endDate" data-i18n="endDate">إلى تاريخ:</label>
+              <input type="date" id="endDate" class="form-date" />
+            </div>
+            <button id="applyDateBtn" class="btn-primary" data-i18n="applyFilter">تطبيق النطاق</button>
+          </div>
+          <div class="date-note" data-i18n="dateRangeNotice">
+            * السجلات التاريخية الرسمية تعتمد على نشرات البنك المركزي المصري اليومية الصادرة في أيام العمل المصرفية (الأحد - الخميس).
+          </div>
+        </div>
+
+        <!-- Price Summary Metrics Strip -->
+        <div class="chart-stats-strip">
+          <div class="stat-box">
+            <span class="stat-label" data-i18n="statCurrent">السعر الحالي (بيع)</span>
+            <span class="stat-value" id="statCurrentVal">--.-- ج.م</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label" data-i18n="statHigh">أعلى سعر بالفترة</span>
+            <span class="stat-value text-success" id="statHighVal">--.-- ج.م</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label" data-i18n="statLow">أدنى سعر بالفترة</span>
+            <span class="stat-value text-danger" id="statLowVal">--.-- ج.م</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label" data-i18n="statChange">التغير الصافي</span>
+            <span class="stat-value" id="statChangeVal">--.--%</span>
+          </div>
+        </div>
+
+        <!-- Chart Canvas Container -->
+        <div class="chart-container-inner">
+          <canvas id="fxChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Currency Converter & Calculator Section -->
+    <section class="converter-section">
+      <div class="converter-card">
+        <div class="converter-header">
+          <div class="calc-icon-box">🧮</div>
+          <div>
+            <h3 class="converter-title" data-i18n="converterTitle">حاسبة وتحويل العملات الفورية</h3>
+            <p class="converter-sub" data-i18n="converterSub">احسب المبلغ بدقة طبقا لأسعار الشراء والبيع الفعلية للبنك المختار</p>
+          </div>
+        </div>
+
+        <div class="converter-body">
+          <div class="converter-row">
+            <!-- Amount Input -->
+            <div class="form-group flex-2">
+              <label for="calcAmount" data-i18n="amountLabel">المبلغ المراد تحويله:</label>
+              <div class="input-with-badge">
+                <input type="number" id="calcAmount" class="form-input" value="1000" min="1" step="any" />
+              </div>
+            </div>
+
+            <!-- From Currency -->
+            <div class="form-group flex-2">
+              <label for="calcFromCurrency" data-i18n="fromLabel">من عملة:</label>
+              <select id="calcFromCurrency" class="form-select">
+                <option value="USD">🇺🇸 USD - دولار أمريكي</option>
+                <option value="EUR">🇪🇺 EUR - يورو أوروبي</option>
+                <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
+                <option value="AED">🇦🇪 AED - درهم إماراتي</option>
+                <option value="GBP">🇬🇧 GBP - جنيه إسترليني</option>
+                <option value="KWD">🇰🇼 KWD - دينار كويتي</option>
+                <option value="QAR">🇶🇦 QAR - ريال قطري</option>
+                <option value="CHF">🇨🇭 CHF - فرنك سويسري</option>
+                <option value="CAD">🇨🇦 CAD - دولار كندي</option>
+                <option value="JPY">🇯🇵 JPY - ين ياباني (100)</option>
+                <option value="EGP">🇪🇬 EGP - الجنيه المصري</option>
+              </select>
+            </div>
+
+            <!-- Swap Button -->
+            <div class="form-group swap-col">
+              <button id="swapCurrenciesBtn" class="btn-swap" title="عكس العملات" aria-label="Swap currencies">
+                ⇄
+              </button>
+            </div>
+
+            <!-- To Currency -->
+            <div class="form-group flex-2">
+              <label for="calcToCurrency" data-i18n="toLabel">إلى عملة:</label>
+              <select id="calcToCurrency" class="form-select">
+                <option value="EGP" selected>🇪🇬 EGP - الجنيه المصري</option>
+                <option value="USD">🇺🇸 USD - دولار أمريكي</option>
+                <option value="EUR">🇪🇺 EUR - يورو أوروبي</option>
+                <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
+                <option value="AED">🇦🇪 AED - درهم إماراتي</option>
+                <option value="GBP">🇬🇧 GBP - جنيه إسترليني</option>
+                <option value="KWD">🇰🇼 KWD - دينار كويتي</option>
+              </select>
+            </div>
+
+            <!-- Transaction Type (Buy/Sell) -->
+            <div class="form-group flex-2">
+              <label for="calcMode" data-i18n="calcModeLabel">نوع المعاملة:</label>
+              <select id="calcMode" class="form-select">
+                <option value="sell_to_bank" data-i18n="modeSellToBank">أنا أبيع للبنك (سعر شراء البنك)</option>
+                <option value="buy_from_bank" data-i18n="modeBuyFromBank">أنا أشتري من البنك (سعر بيع البنك)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Conversion Result Display Box -->
+          <div class="converter-result-box">
+            <div class="result-formula">
+              <span id="formulaText">1,000 USD =</span>
+            </div>
+            <div class="result-total">
+              <span class="total-number" id="resultTotal">56,067.50</span>
+              <span class="total-unit" id="resultUnit">جنيه مصري</span>
+            </div>
+            <div class="result-breakdown" id="resultBreakdown">
+              سعر الصرف المعتمد: 1 USD = 56.0675 EGP (البنك المركزي المصري)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Source Verification & Disclosure Section -->
+    <section class="disclosure-section">
+      <div class="disclosure-card">
+        <div class="disclosure-header">
+          <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4M12 8h.01"></path>
+          </svg>
+          <h4 class="disclosure-title" data-i18n="disclosureTitle">إفصاح الشفافية ومصادر البيانات المصرفية</h4>
+        </div>
+        <div class="disclosure-grid">
+          <div class="disclosure-col">
+            <h5 data-i18n="disCbeTitle">البنك المركزي المصري (CBE)</h5>
+            <p data-i18n="disCbeText">
+              المصدر: النشرة الإحصائية الرسمية اليومية للبنك المركزي المصري. تنشر الأسعار الرسمية في ختام جلسات التسوية بين البنوك (Interbank) للأغراض الإحصائية والمحاسبية الرسمية.
+            </p>
+            <a href="https://www.cbe.org.eg" target="_blank" rel="noopener noreferrer" class="external-link">cbe.org.eg ↗</a>
+          </div>
+          <div class="disclosure-col">
+            <h5 data-i18n="disNbeTitle">البنك الأهلي المصري (NBE)</h5>
+            <p data-i18n="disNbeText">
+              المصدر: منظومة أسعار الصرف لقطاع الخزانة بالبنك الأهلي المصري. يتم تحديث الأسعار لحظياً خلال ساعات العمل مع تغيرات التداول العالمية والمحلية للتحويلات والبنكنوت.
+            </p>
+            <a href="https://www.nbe.com.eg" target="_blank" rel="noopener noreferrer" class="external-link">nbe.com.eg ↗</a>
+          </div>
+          <div class="disclosure-col">
+            <h5 data-i18n="disBmTitle">بنك مصر (Banque Misr)</h5>
+            <p data-i18n="disBmText">
+              المصدر: أسعار العملات الرسمية المنشورة عبر فروع وقنوات بنك مصر الرسمية. تغطي العملات الرئيسية والعربية وتخضع للشروط والأحكام المصرفية.
+            </p>
+            <a href="https://www.banquemisr.com" target="_blank" rel="noopener noreferrer" class="external-link">banquemisr.com ↗</a>
+          </div>
+        </div>
+        <div class="disclosure-footer">
+          <p data-i18n="disclaimerPolicy">
+            ⚖️ <strong>تنويه قانوني ومصرفي:</strong> الأسعار المعروضة هي للأغراض الإرشادية والمعلوماتية العامة. قد تختلف الأسعار الفعلية للتنفيذ في الفروع أو البطاقات الائتمانية بناءً على رسوم التدبير والعمولات المصرفية المحددة لكل بنك.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="brand-title">مؤشر الجنيه المصري | Egypt FX Live</div>
+        <p class="brand-desc" data-i18n="footerDesc">
+          المنصة الوطنية المفتوحة لمتابعة أسعار صرف العملات الأجنبية في مصر من البنوك الرسمية.
+        </p>
+      </div>
+
+      <div class="footer-credit-badge">
+        <div class="credit-box">
+          <span class="credit-role" data-i18n="devCreditRole">تصميم وتطوير هندسي</span>
+          <strong class="credit-name">محمود الجوهري | Mahmoud El-Gohary</strong>
+          <span class="credit-tech">Modern High-Performance Financial UI/UX Engine</span>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <button id="scrollToTopBtn" class="btn-top" title="العودة للأعلى" aria-label="Scroll to top">
+          ↑ <span data-i18n="scrollTop">للأعلى</span>
+        </button>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container bottom-row">
+        <span>© <span id="currentYear">2026</span> - جميع الحقوق محفوظة لجمهورية مصر العربية ومصادر البنوك الرسمية</span>
+        <span>Developer Credit: <strong>Mahmoud El-Gohary</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
+
