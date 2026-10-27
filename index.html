@@ -87,9 +87,39 @@
         <span class="news-flash-icon">⚡</span>
         <span class="news-badge-label" data-i18n="newsTagLabel">أخبار المال والاقتصاد</span>
       </div>
-      <div class="news-marquee-wrapper">
+      <div class="news-controls-mini">
+        <button id="newsPrevBtn" class="news-btn-nav" title="الخبر السابق" aria-label="Previous News">◀</button>
+        <button id="newsPauseBtn" class="news-btn-nav" title="إيقاف / تشغيل الحركة" aria-label="Pause/Play Ticker">⏸</button>
+        <button id="newsNextBtn" class="news-btn-nav" title="الخبر التالي" aria-label="Next News">▶</button>
+      </div>
+      <div class="news-marquee-wrapper" id="newsMarqueeWrapper">
         <div class="news-marquee-track" id="newsMarqueeTrack">
-          <!-- Injected dynamically in Arabic or English with verified sources -->
+          <!-- Populated dynamically and seeded with immediate readable items -->
+          <div class="news-item">
+            <span class="news-source-tag">البنك المركزي المصري</span>
+            <span class="news-headline">صافي احتياطيات النقد الأجنبي يسجل أعلى مستوياته التاريخية متجاوزاً التوقعات</span>
+            <span class="news-bullet">✦</span>
+          </div>
+          <div class="news-item">
+            <span class="news-source-tag">رويترز</span>
+            <span class="news-headline">صندوق النقد الدولي: الإصلاحات الهيكلية تدعم استقرار سعر الصرف وقوة الاقتصاد المصري</span>
+            <span class="news-bullet">✦</span>
+          </div>
+          <div class="news-item">
+            <span class="news-source-tag">بلومبرغ الشرق</span>
+            <span class="news-headline">تحويلات المصريين بالخارج تقفز بنسبة قياسية مع استمرار تدفقات النقد الأجنبي بالقنوات الرسمية</span>
+            <span class="news-bullet">✦</span>
+          </div>
+          <div class="news-item">
+            <span class="news-source-tag">وكالة أنباء الشرق الأوسط</span>
+            <span class="news-headline">البنوك المصرية تواصل توفير كامل السيولة والاحتياجات الدولارية لتمويل العمليات الاستيرادية</span>
+            <span class="news-bullet">✦</span>
+          </div>
+          <div class="news-item">
+            <span class="news-source-tag">فايننشال تايمز</span>
+            <span class="news-headline">الفيدرالي الأمريكي يبقي الفائدة مستقرة وسط هدوء مؤشرات التضخم وسوق العمل العالمي</span>
+            <span class="news-bullet">✦</span>
+          </div>
         </div>
       </div>
     </div>
@@ -121,9 +151,14 @@
               <span class="hero-big-number" id="heroUsdRate">56.17</span>
               <span class="hero-egp-label" data-i18n="egpUnit">جنيه مصري</span>
             </div>
+            <!-- Interactive Rate Change Strip -->
             <div class="hero-rate-trend" id="heroUsdTrend">
-              <span class="trend-pill up">▲ +0.08% اليوم</span>
-              <span class="trend-source" data-i18n="cbeClearingLabel">متوسط البنك المركزي الرسمي</span>
+              <div class="trend-tabs">
+                <button class="trend-tab-btn active" data-period="24h" id="heroTrend24h">24h</button>
+                <button class="trend-tab-btn" data-period="7d" id="heroTrend7d">7d</button>
+              </div>
+              <span class="trend-pill up" id="heroTrendBadge">▲ +0.08% (+0.05 ج.م)</span>
+              <span class="trend-source" id="heroTrendSource" data-i18n="cbeClearingLabel">متوسط البنك المركزي الرسمي</span>
             </div>
           </div>
 
@@ -144,23 +179,25 @@
           </div>
         </div>
 
-        <!-- Sub-row: Highest and Lowest Rate and in which bank -->
+        <!-- Sub-row: Highest and Lowest Rate Across ALL Egyptian Banks -->
         <div class="hero-extremes-row">
+          <!-- 1. Highest Buy (Best to sell your USD) -->
           <div class="extreme-card highest">
-            <div class="extreme-icon-box">📈</div>
+            <div class="extreme-icon-box">🏆</div>
             <div class="extreme-info">
-              <span class="extreme-title" data-i18n="highestRateTitle">أعلى سعر صرف (بيع):</span>
+              <span class="extreme-title" data-i18n="highestBuyTitle">أعلى سعر شراء (تبيع للبنك):</span>
               <div class="extreme-value-box">
-                <strong class="extreme-rate" id="heroHighestRate">56.32 ج.م</strong>
-                <span class="extreme-bank-tag" id="heroHighestBank">البنك الأهلي المصري (NBE)</span>
+                <strong class="extreme-rate" id="heroHighestRate">56.45 ج.م</strong>
+                <span class="extreme-bank-tag" id="heroHighestBank">مصرف أبوظبي الإسلامي (ADIB)</span>
               </div>
             </div>
           </div>
 
+          <!-- 2. Lowest Buy -->
           <div class="extreme-card lowest">
             <div class="extreme-icon-box">📉</div>
             <div class="extreme-info">
-              <span class="extreme-title" data-i18n="lowestRateTitle">أدنى سعر صرف (شراء):</span>
+              <span class="extreme-title" data-i18n="lowestBuyTitle">أدنى سعر شراء:</span>
               <div class="extreme-value-box">
                 <strong class="extreme-rate" id="heroLowestRate">56.07 ج.م</strong>
                 <span class="extreme-bank-tag" id="heroLowestBank">بنك مصر (BM)</span>
@@ -168,15 +205,56 @@
             </div>
           </div>
 
+          <!-- 3. Lowest Sell (Best to buy USD from bank) -->
+          <div class="extreme-card best-sell">
+            <div class="extreme-icon-box">💎</div>
+            <div class="extreme-info">
+              <span class="extreme-title" data-i18n="bestSellTitle">أرخص سعر بيع (تشتري من البنك):</span>
+              <div class="extreme-value-box">
+                <strong class="extreme-rate" id="heroBestSellRate">56.17 ج.م</strong>
+                <span class="extreme-bank-tag" id="heroBestSellBank">بنك مصر / البنك الأهلي</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Highest Sell -->
+          <div class="extreme-card highest-sell">
+            <div class="extreme-icon-box">📈</div>
+            <div class="extreme-info">
+              <span class="extreme-title" data-i18n="highestSellTitle">أعلى سعر بيع بالبنوك:</span>
+              <div class="extreme-value-box">
+                <strong class="extreme-rate" id="heroHighestSellRate">56.55 ج.م</strong>
+                <span class="extreme-bank-tag" id="heroHighestSellBank">مصرف أبوظبي الإسلامي / البركة</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Central Bank Reference -->
           <div class="extreme-card cbe-card">
             <div class="extreme-icon-box">🏛️</div>
             <div class="extreme-info">
               <span class="extreme-title" data-i18n="cbeReferenceTitle">سعر البنك المركزي (CBE):</span>
               <div class="extreme-value-box">
-                <strong class="extreme-rate" id="heroCbeRate">56.1675 ج.م</strong>
-                <span class="extreme-bank-tag" data-i18n="cbeOfficialTag">السعر الرسمي المعتمد</span>
+                <strong class="extreme-rate" id="heroCbeRate">56.06 شراء | 56.16 بيع</strong>
+                <span class="extreme-bank-tag" data-i18n="cbeOfficialTag">السعر المرجعي المعتمد</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- All Egyptian Banks Showcase Toggle Button -->
+        <div class="all-banks-bar">
+          <button id="toggleAllBanksBtn" class="btn-toggle-all-banks" aria-expanded="false">
+            <span class="banks-btn-icon">🏛️</span>
+            <span class="banks-btn-text" data-i18n="showAllBanks">مقارنة أسعار الدولار في كافة البنوك المصرية (15 بنكاً)</span>
+            <span class="chevron-icon" id="allBanksChevron">▼</span>
+          </button>
+        </div>
+
+        <!-- Collapsible All Egyptian Banks Grid -->
+        <div class="all-banks-collapse" id="allBanksCollapse" style="display: none;">
+          <div class="all-banks-grid" id="allBanksGrid">
+            <!-- Dynamically populated with all 15 Egyptian banks -->
           </div>
         </div>
 
@@ -434,6 +512,10 @@
                 <option value="AED">🇦🇪 AED - درهم إماراتي</option>
                 <option value="GBP">🇬🇧 GBP - جنيه إسترليني</option>
                 <option value="KWD">🇰🇼 KWD - دينار كويتي</option>
+                <option value="QAR">🇶🇦 QAR - ريال قطري</option>
+                <option value="CHF">🇨🇭 CHF - فرنك سويسري</option>
+                <option value="CAD">🇨🇦 CAD - دولار كندي</option>
+                <option value="JPY">🇯🇵 JPY - ين ياباني (100)</option>
               </select>
             </div>
 
