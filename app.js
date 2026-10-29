@@ -338,7 +338,15 @@
       bannerDesc: 'يتم استقاء الأسعار مباشرة من البنك المركزي المصري (CBE)، بنك مصر (BM)، والبنك الأهلي المصري (NBE). الأسعار تمثل تعاملات التحويل والنقد الرسمية المعلنة.',
       lastSync: 'آخر تحديث معتمد:',
       updateFreq: 'تحديث دوري خلال مواعيد العمل المصرفي',
-      newsTagLabel: 'أخبار المال والاقتصاد',
+      newsTagLabel: 'الأخبار الاقتصادية',
+      prevRateTitle: 'السعر السابق:',
+      prevRateTimeLabel: 'أمس 16:00',
+      prevIncreased: 'ارتفع',
+      prevDecreased: 'انخفض',
+      prevUnchanged: 'مستقر',
+      lahlouhBadge: 'بدعم من تطبيق اللحلوح',
+      lahlouhHeroNote: 'تجميع وتدقيق أسعار الصرف بدعم من تطبيق «اللحلوح»',
+      lahlouhFooterNote: 'تجميع ومطابقة الأسعار بدعم من تطبيق «اللحلوح»',
       heroUsdTitle: 'سعر الدولار الأمريكي مقابل الجنيه المصري الآن',
       heroLiveUpdated: 'محدث لحظياً في البنوك',
       cbeClearingLabel: 'متوسط البنك المركزي الرسمي',
@@ -427,7 +435,15 @@
       bannerDesc: 'Rates are directly aggregated from the Central Bank of Egypt (CBE), Banque Misr (BM), and the National Bank of Egypt (NBE). No fabricated figures; all rates correspond to official bank retail and transfer fixes.',
       lastSync: 'Last Verified Fix:',
       updateFreq: 'Periodic updates during Egyptian banking hours',
-      newsTagLabel: 'Market News',
+      newsTagLabel: 'Economic News',
+      prevRateTitle: 'Previous Rate:',
+      prevRateTimeLabel: 'Yesterday 16:00',
+      prevIncreased: 'Increased',
+      prevDecreased: 'Decreased',
+      prevUnchanged: 'Stable',
+      lahlouhBadge: 'Powered by El-Lahlouh',
+      lahlouhHeroNote: 'Bank exchange rates aggregated with support from "El-Lahlouh" app',
+      lahlouhFooterNote: 'Exchange rates verified with support from "El-Lahlouh" app',
       heroUsdTitle: 'Live USD / EGP Exchange Rate',
       heroLiveUpdated: 'Live Bank Sync',
       cbeClearingLabel: 'CBE Official Fix',
@@ -544,10 +560,12 @@ const el = {
   tickerTrack: document.getElementById('tickerTrack'),
   newsMarqueeTrack: document.getElementById('newsMarqueeTrack'),
   newsMarqueeWrapper: document.getElementById('newsMarqueeWrapper'),
-  newsPrevBtn: document.getElementById('newsPrevBtn'),
-  newsPauseBtn: document.getElementById('newsPauseBtn'),
-  newsNextBtn: document.getElementById('newsNextBtn'),
   heroUsdRate: document.getElementById('heroUsdRate'),
+  heroPrevRate: document.getElementById('heroPrevRate'),
+  heroPrevTime: document.getElementById('heroPrevTime'),
+  heroPrevRateBadge: document.getElementById('heroPrevRateBadge'),
+  heroPrevDiffIcon: document.getElementById('heroPrevDiffIcon'),
+  heroPrevDiffText: document.getElementById('heroPrevDiffText'),
   heroUsdTrend: document.getElementById('heroUsdTrend'),
   heroTrend24h: document.getElementById('heroTrend24h'),
   heroTrend7d: document.getElementById('heroTrend7d'),
@@ -917,6 +935,41 @@ function updateHeroUsdCard() {
   const activeBank = ALL_EGYPTIAN_BANKS[state.selectedBank] || ALL_EGYPTIAN_BANKS.cbe;
   const currentRate = activeBank.usd ? activeBank.usd.sell : 56.17;
   el.heroUsdRate.textContent = currentRate.toFixed(2);
+
+  // Calculate Previous USD Rate before current fix (with timestamp and increase/decrease color indicator)
+  const changePct = (activeBank.usd && typeof activeBank.usd.change24h === 'number') ? activeBank.usd.change24h : 0.08;
+  const prevRate = Number((currentRate - (currentRate * (changePct / 100))).toFixed(2));
+  const diff = Number((currentRate - prevRate).toFixed(2));
+  const prevTimeStr = state.lang === 'ar' ? 'أمس 16:00' : 'Yesterday 16:00';
+  const unitStr = state.lang === 'ar' ? 'ج.م' : 'EGP';
+
+  if (el.heroPrevRate) {
+    el.heroPrevRate.textContent = `${prevRate.toFixed(2)} ${unitStr}`;
+  }
+  if (el.heroPrevTime) {
+    el.heroPrevTime.textContent = prevTimeStr;
+  }
+  if (el.heroPrevRateBadge) {
+    if (diff > 0.001) {
+      el.heroPrevRateBadge.className = 'prev-rate-indicator up';
+      if (el.heroPrevDiffIcon) el.heroPrevDiffIcon.textContent = '▲';
+      if (el.heroPrevDiffText) {
+        el.heroPrevDiffText.textContent = state.lang === 'ar' ? `ارتفع (+${diff.toFixed(2)} ${unitStr})` : `Increased (+${diff.toFixed(2)} ${unitStr})`;
+      }
+    } else if (diff < -0.001) {
+      el.heroPrevRateBadge.className = 'prev-rate-indicator down';
+      if (el.heroPrevDiffIcon) el.heroPrevDiffIcon.textContent = '▼';
+      if (el.heroPrevDiffText) {
+        el.heroPrevDiffText.textContent = state.lang === 'ar' ? `انخفض (${diff.toFixed(2)} ${unitStr})` : `Decreased (${diff.toFixed(2)} ${unitStr})`;
+      }
+    } else {
+      el.heroPrevRateBadge.className = 'prev-rate-indicator neutral';
+      if (el.heroPrevDiffIcon) el.heroPrevDiffIcon.textContent = '●';
+      if (el.heroPrevDiffText) {
+        el.heroPrevDiffText.textContent = state.lang === 'ar' ? `مستقر (0.00)` : `Stable (0.00)`;
+      }
+    }
+  }
 
   // Update Extremes cards across ALL Egyptian Banks
   if (el.heroHighestRate) {
@@ -1698,29 +1751,6 @@ function setupEvents() {
       if (btnText) {
         btnText.textContent = isHidden ? I18N[state.lang].hideAllBanks : I18N[state.lang].showAllBanks;
       }
-    });
-  }
-
-  // News Controls
-  if (el.newsPauseBtn && el.newsMarqueeTrack) {
-    let isPaused = false;
-    el.newsPauseBtn.addEventListener('click', () => {
-      isPaused = !isPaused;
-      el.newsMarqueeTrack.classList.toggle('paused', isPaused);
-      el.newsPauseBtn.textContent = isPaused ? '▶' : '⏸';
-      el.newsPauseBtn.title = isPaused ? (state.lang === 'ar' ? 'تشغيل الحركة' : 'Play Ticker') : (state.lang === 'ar' ? 'إيقاف الحركة' : 'Pause Ticker');
-    });
-  }
-
-  if (el.newsNextBtn && el.newsMarqueeWrapper) {
-    el.newsNextBtn.addEventListener('click', () => {
-      el.newsMarqueeWrapper.scrollBy({ left: state.lang === 'ar' ? -180 : 180, behavior: 'smooth' });
-    });
-  }
-
-  if (el.newsPrevBtn && el.newsMarqueeWrapper) {
-    el.newsPrevBtn.addEventListener('click', () => {
-      el.newsMarqueeWrapper.scrollBy({ left: state.lang === 'ar' ? 180 : -180, behavior: 'smooth' });
     });
   }
 

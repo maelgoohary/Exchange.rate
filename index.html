@@ -7,6 +7,10 @@
   <meta name="description" content="منصة أسعار الصرف الحية للجنيه المصري مقابل العملات الأجنبية من البنك المركزي المصري، البنك الأهلي المصري، وبنك مصر.">
   <meta name="author" content="Mahmoud El-Gohary">
   
+  <!-- Favicon / App Icon -->
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="apple-touch-icon" href="logo.jpg">
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,14 +27,17 @@
   <header class="site-header">
     <div class="container header-container">
       <div class="logo-area">
-        <div class="logo-badge">
-          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 6v12M15 9.5H9.5a2.5 2.5 0 0 0 0 5h5a2.5 2.5 0 0 1 0 5H8"></path>
-          </svg>
+        <div class="logo-badge logo-img-badge">
+          <img src="logo.jpg" alt="شعار تطبيق اللحلوح" class="site-brand-logo">
         </div>
         <div class="logo-text">
-          <h1 class="site-title" data-i18n="siteTitle">مؤشر الجنيه المصري</h1>
+          <div class="title-with-pill">
+            <h1 class="site-title" data-i18n="siteTitle">مؤشر الجنيه المصري</h1>
+            <span class="lahlouh-note-pill">
+              <span class="lahlouh-dot"></span>
+              <span data-i18n="lahlouhBadge">بدعم من تطبيق اللحلوح</span>
+            </span>
+          </div>
           <p class="site-subtitle" data-i18n="siteSubtitle">أسعار الصرف الرسمية الموثقة لحظة بلحظة</p>
         </div>
       </div>
@@ -85,12 +92,7 @@
     <div class="news-ticker-bar" id="newsTickerBar">
       <div class="news-tag-badge">
         <span class="news-flash-icon">⚡</span>
-        <span class="news-badge-label" data-i18n="newsTagLabel">أخبار المال والاقتصاد</span>
-      </div>
-      <div class="news-controls-mini">
-        <button id="newsPrevBtn" class="news-btn-nav" title="الخبر السابق" aria-label="Previous News">◀</button>
-        <button id="newsPauseBtn" class="news-btn-nav" title="إيقاف / تشغيل الحركة" aria-label="Pause/Play Ticker">⏸</button>
-        <button id="newsNextBtn" class="news-btn-nav" title="الخبر التالي" aria-label="Next News">▶</button>
+        <span class="news-badge-label" data-i18n="newsTagLabel">الأخبار الاقتصادية</span>
       </div>
       <div class="news-marquee-wrapper" id="newsMarqueeWrapper">
         <div class="news-marquee-track" id="newsMarqueeTrack">
@@ -150,7 +152,29 @@
             <div class="hero-rate-display">
               <span class="hero-big-number" id="heroUsdRate">56.17</span>
               <span class="hero-egp-label" data-i18n="egpUnit">جنيه مصري</span>
+
+              <!-- Previous USD Rate Box (Smaller font, timestamp, and increase/decrease color indicator) -->
+              <div class="hero-prev-rate-box" id="heroPrevRateBox">
+                <div class="prev-rate-top">
+                  <span class="prev-rate-title" data-i18n="prevRateTitle">السعر السابق:</span>
+                  <span class="prev-rate-time" id="heroPrevTime">أمس 16:00</span>
+                </div>
+                <div class="prev-rate-values">
+                  <strong class="prev-rate-num" id="heroPrevRate">56.10 ج.م</strong>
+                  <span class="prev-rate-indicator up" id="heroPrevRateBadge">
+                    <span class="prev-diff-icon" id="heroPrevDiffIcon">▲</span>
+                    <span class="prev-diff-text" id="heroPrevDiffText">ارتفع (+0.07 ج.م)</span>
+                  </span>
+                </div>
+              </div>
             </div>
+
+            <!-- Note: Powered by El-Lahlouh app -->
+            <div class="hero-lahlouh-note">
+              <img src="logo.jpg" alt="" class="lahlouh-mini-img">
+              <span data-i18n="lahlouhHeroNote">تجميع وتدقيق أسعار الصرف بدعم من تطبيق «اللحلوح»</span>
+            </div>
+
             <!-- Interactive Rate Change Strip -->
             <div class="hero-rate-trend" id="heroUsdTrend">
               <div class="trend-tabs">
@@ -597,6 +621,10 @@
         <p class="brand-desc" data-i18n="footerDesc">
           المنصة الوطنية المفتوحة لمتابعة أسعار صرف العملات الأجنبية في مصر من البنوك الرسمية.
         </p>
+        <div class="lahlouh-footer-badge">
+          <img src="logo.jpg" alt="" class="lahlouh-footer-icon">
+          <span data-i18n="lahlouhFooterNote">تجميع ومطابقة الأسعار بدعم من تطبيق «اللحلوح»</span>
+        </div>
       </div>
 
       <div class="footer-credit-badge">
