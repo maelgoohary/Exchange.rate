@@ -19,8 +19,8 @@
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Main Stylesheet (with cache-buster) -->
+  <link rel="stylesheet" href="style.css?v=2.2">
 </head>
 <body>
   <!-- Header / Navigation -->
@@ -28,14 +28,14 @@
     <div class="container header-container">
       <div class="logo-area">
         <div class="logo-badge logo-img-badge">
-          <img src="logo.jpg" alt="شعار تطبيق اللحلوح" class="site-brand-logo">
+          <img src="logo.jpg" alt="شعار تطبيق اللحلوح" class="site-brand-logo" width="48" height="48" style="width: 48px !important; height: 48px !important; max-width: 48px !important; max-height: 48px !important; border-radius: 10px; object-fit: cover; display: block;">
         </div>
         <div class="logo-text">
           <div class="title-with-pill">
             <h1 class="site-title" data-i18n="siteTitle">مؤشر الجنيه المصري</h1>
             <span class="lahlouh-note-pill">
               <span class="lahlouh-dot"></span>
-              <span data-i18n="lahlouhBadge">بدعم من تطبيق اللحلوح</span>
+              <span data-i18n="lahlouhBadge">بدعم من تطبيق اللحلوح | تطوير: محمود الجوهري</span>
             </span>
           </div>
           <p class="site-subtitle" data-i18n="siteSubtitle">أسعار الصرف الرسمية الموثقة لحظة بلحظة</p>
@@ -171,8 +171,8 @@
 
             <!-- Note: Powered by El-Lahlouh app -->
             <div class="hero-lahlouh-note">
-              <img src="logo.jpg" alt="" class="lahlouh-mini-img">
-              <span data-i18n="lahlouhHeroNote">تجميع وتدقيق أسعار الصرف بدعم من تطبيق «اللحلوح»</span>
+              <span class="lahlouh-sparkle">✨</span>
+              <span data-i18n="lahlouhHeroNote">تجميع وتدقيق أسعار الصرف بدعم من تطبيق «اللحلوح» | تطوير: محمود الجوهري</span>
             </div>
 
             <!-- Interactive Rate Change Strip -->
@@ -622,8 +622,8 @@
           المنصة الوطنية المفتوحة لمتابعة أسعار صرف العملات الأجنبية في مصر من البنوك الرسمية.
         </p>
         <div class="lahlouh-footer-badge">
-          <img src="logo.jpg" alt="" class="lahlouh-footer-icon">
-          <span data-i18n="lahlouhFooterNote">تجميع ومطابقة الأسعار بدعم من تطبيق «اللحلوح»</span>
+          <span class="footer-app-icon">⚡</span>
+          <span data-i18n="lahlouhFooterNote">تجميع ومطابقة الأسعار بدعم من تطبيق «اللحلوح» | تطوير: محمود الجوهري</span>
         </div>
       </div>
 
@@ -652,8 +652,8 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-  <!-- App Script -->
-  <script src="app.js"></script>
+  <!-- App Script (with cache-buster) -->
+  <script src="app.js?v=2.2"></script>
 </body>
 </html>
 

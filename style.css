@@ -181,6 +181,11 @@ input, select {
   padding-block: 0.85rem;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 .logo-area {
   display: flex;
   align-items: center;
@@ -188,30 +193,40 @@ input, select {
 }
 
 .logo-badge {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
+  width: 48px !important;
+  height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  border-radius: 12px !important;
   background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-  display: grid;
-  place-items: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   color: #ffffff;
   box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-  flex-shrink: 0;
-  overflow: hidden;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
 }
 
 .logo-badge.logo-img-badge {
-  background: transparent;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
-  border: 2px solid rgba(16, 185, 129, 0.45);
+  background: transparent !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35) !important;
+  border: 1.5px solid rgba(16, 185, 129, 0.45) !important;
+  padding: 0 !important;
 }
 
 .site-brand-logo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: calc(var(--radius-md) - 2px);
-  display: block;
+  width: 48px !important;
+  height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  object-fit: cover !important;
+  border-radius: 10px !important;
+  display: block !important;
 }
 
 .title-with-pill {
